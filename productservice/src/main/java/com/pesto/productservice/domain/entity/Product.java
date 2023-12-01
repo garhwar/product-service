@@ -10,6 +10,8 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Version
+    private Long version;
     @Column(name = "name")
     private String name;
     @Column(name = "description")
@@ -28,6 +30,13 @@ public class Product {
     @Column(name = "quantity_available")
     private int quantityAvailable;
 
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 
     public Long getId() {
         return id;
@@ -106,11 +115,11 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return Double.compare(price, product.price) == 0 && quantityAvailable == product.quantityAvailable && Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(description, product.description) && Objects.equals(size, product.size) && Objects.equals(color, product.color) && Objects.equals(material, product.material) && Objects.equals(category, product.category);
+        return Double.compare(price, product.price) == 0 && quantityAvailable == product.quantityAvailable && Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(description, product.description) && Objects.equals(size, product.size) && Objects.equals(color, product.color) && Objects.equals(material, product.material) && Objects.equals(category, product.category) && Objects.equals(version, product.version);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, size, color, material, price, category, quantityAvailable);
+        return Objects.hash(id, name, description, size, color, material, price, category, quantityAvailable, version);
     }
 }
