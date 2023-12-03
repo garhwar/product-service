@@ -9,9 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     @Autowired
@@ -36,9 +40,14 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<Product>> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "100") int size,
+            @RequestParam(required = false) List<Long> productIds) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Product> products = productService.getAllProducts(pageRequest);
+        Page<Product> products;
+        if (!Objects.isNull(productIds) && !productIds.isEmpty())
+            products = productService.getProductsByIds(productIds, pageRequest);
+        else
+            products = productService.getAllProducts(pageRequest);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 

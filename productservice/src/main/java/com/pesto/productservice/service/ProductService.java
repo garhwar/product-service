@@ -10,7 +10,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ProductService {
@@ -32,9 +34,6 @@ public class ProductService {
             product.setName(updatedProduct.getName());
             product.setDescription(updatedProduct.getDescription());
             product.setPrice(updatedProduct.getPrice());
-            product.setColor(updatedProduct.getColor());
-            product.setMaterial(updatedProduct.getMaterial());
-            product.setSize(updatedProduct.getSize());
             product.setQuantityAvailable(updatedProduct.getQuantityAvailable());
             if (updatedProduct.getCategory() != null) {
                 Category updatedCategory = updatedProduct.getCategory();
@@ -62,5 +61,9 @@ public class ProductService {
     public Product getProductById(Long productId) {
         Optional<Product> product = productRepository.findById(productId);
         return product.orElse(null);
+    }
+
+    public Page<Product> getProductsByIds(List<Long> productIds, PageRequest pageRequest) {
+        return productRepository.findAllByIdIn(productIds, pageRequest);
     }
 }

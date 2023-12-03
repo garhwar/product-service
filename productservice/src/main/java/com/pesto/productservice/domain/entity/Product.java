@@ -16,12 +16,6 @@ public class Product {
     private String name;
     @Column(name = "description")
     private String description;
-    @Column(name = "size")
-    private String size;
-    @Column(name = "color")
-    private String color;
-    @Column(name = "material")
-    private String material;
     @Column(name = "price")
     private double price;
     @ManyToOne
@@ -62,30 +56,6 @@ public class Product {
         this.description = description;
     }
 
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getMaterial() {
-        return material;
-    }
-
-    public void setMaterial(String material) {
-        this.material = material;
-    }
-
     public double getPrice() {
         return price;
     }
@@ -115,11 +85,11 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return Double.compare(price, product.price) == 0 && quantityAvailable == product.quantityAvailable && Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(description, product.description) && Objects.equals(size, product.size) && Objects.equals(color, product.color) && Objects.equals(material, product.material) && Objects.equals(category, product.category) && Objects.equals(version, product.version);
+        return Double.compare(price, product.price) == 0 && quantityAvailable == product.quantityAvailable && Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(description, product.description) && Objects.equals(category, product.category) && Objects.equals(version, product.version);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, size, color, material, price, category, quantityAvailable, version);
+        return Objects.hash(id, name, description, price, category, quantityAvailable, version);
     }
 }
