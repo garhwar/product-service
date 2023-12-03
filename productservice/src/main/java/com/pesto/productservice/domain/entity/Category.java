@@ -1,5 +1,6 @@
 package com.pesto.productservice.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.Objects;
 import java.util.Set;
@@ -14,6 +15,8 @@ public class Category {
     private String name;
     @Column(name = "description")
     private String description;
+
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private Set<Product> products;
 

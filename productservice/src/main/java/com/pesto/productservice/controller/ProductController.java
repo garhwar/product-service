@@ -41,14 +41,14 @@ public class ProductController {
     public ResponseEntity<Page<Product>> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "100") int size,
-            @RequestParam(required = false) List<Long> productIds) {
+            @RequestParam(required = false) List<Long> ids) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Product> products;
-        if (!Objects.isNull(productIds) && !productIds.isEmpty())
-            products = productService.getProductsByIds(productIds, pageRequest);
+        if (!Objects.isNull(ids) && !ids.isEmpty())
+            products = productService.getProductsByIds(ids, pageRequest);
         else
             products = productService.getAllProducts(pageRequest);
-        return new ResponseEntity<>(products, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
     @GetMapping("/{productId}")
