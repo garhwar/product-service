@@ -158,8 +158,6 @@ class ProductServiceTest {
         product.setPrice(1000.0);
         product.setVersion(1L);
         product.setQuantityAvailable(10);
-        product.setColor("Red");
-        product.setMaterial("Wool");
         product.setDescription("Woolly thermal wear");
         product.setCategory(category);
         return product;

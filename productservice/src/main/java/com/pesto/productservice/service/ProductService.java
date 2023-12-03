@@ -4,15 +4,16 @@ import com.pesto.productservice.domain.entity.Category;
 import com.pesto.productservice.domain.entity.Product;
 import com.pesto.productservice.domain.repository.CategoryRepository;
 import com.pesto.productservice.domain.repository.ProductRepository;
+import com.pesto.productservice.service.messaging.OrderMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class ProductService {
@@ -29,7 +30,7 @@ public class ProductService {
         try {
             Optional<Product> returnedProduct = productRepository.findById(productId);
             if (returnedProduct.isEmpty())
-                return null;
+                throw new IllegalArgumentException("Product not found");
             Product product = returnedProduct.get();
             product.setName(updatedProduct.getName());
             product.setDescription(updatedProduct.getDescription());
@@ -50,7 +51,7 @@ public class ProductService {
             return productRepository.save(product);
         }
         catch (ObjectOptimisticLockingFailureException ex) {
-            throw new IllegalStateException("The product has been updated by another user. Please retry.");
+            throw new IllegalStateException("The product was already updated by another user");
         }
     }
 
@@ -65,5 +66,26 @@ public class ProductService {
 
     public Page<Product> getProductsByIds(List<Long> productIds, PageRequest pageRequest) {
         return productRepository.findAllByIdIn(productIds, pageRequest);
+    }
+
+    public void processOrder(List<OrderMessage.OrderProduct> orderProducts) {
+        try {
+            List<Product> productsToSave = new ArrayList<>();
+            for (OrderMessage.OrderProduct orderProduct : orderProducts) {
+                Long productId = orderProduct.getProductId();
+                Optional<Product> returnedProduct = productRepository.findById(productId);
+                if (returnedProduct.isEmpty())
+                    throw new IllegalArgumentException("Product not found");
+                Product product = returnedProduct.get();
+                if (product.getQuantityAvailable() < orderProduct.getQuantity())
+                    throw new IllegalStateException("Product out of stock");
+                product.setQuantityAvailable(product.getQuantityAvailable() - orderProduct.getQuantity());
+                productsToSave.add(product);
+            }
+            productRepository.saveAll(productsToSave);
+        }
+        catch (ObjectOptimisticLockingFailureException ex) {
+            throw new IllegalStateException("A product was already updated by another user");
+        }
     }
 }
