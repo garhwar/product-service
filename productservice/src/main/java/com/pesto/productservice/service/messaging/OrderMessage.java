@@ -1,18 +1,40 @@
 package com.pesto.productservice.service.messaging;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Set;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderMessage {
-    private List<OrderProduct> orderProducts;
+    private Long orderId;
+    private Long userId;
+    private Set<OrderProduct> orderProducts;
 
-    public List<OrderProduct> getOrderProducts() {
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Set<OrderProduct> getOrderProducts() {
         return orderProducts;
     }
 
-    public void setOrderProducts(List<OrderProduct> orderProducts) {
+    public void setOrderProducts(Set<OrderProduct> orderProducts) {
         this.orderProducts = orderProducts;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class OrderProduct {
         private Long productId;
         private int quantity;

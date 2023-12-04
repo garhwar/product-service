@@ -9,8 +9,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -20,16 +18,16 @@ public class KafkaMessageListener {
     ProductService productService;
 
     @KafkaListener(topics = "order-topic", groupId = "order-created-consumers")
-    public void processOrderMessage(String orderMessage) throws JsonProcessingException {
-        List<OrderMessage.OrderProduct> orderProducts = null;
+    public void processOrderMessage(String message) {
+        OrderMessage orderMessage;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            orderProducts = objectMapper.readValue(
-                    orderMessage, new TypeReference<>() {});
+            orderMessage = objectMapper.readValue(
+                    message, new TypeReference<>() {});
         } catch (IOException e) {
-            throw new IllegalStateException("Failed to deserialize message");
+            throw new IllegalStateException("Failed to deserialize message", e);
         }
-        if (!Objects.isNull(orderProducts))
-            productService.processOrder(orderProducts);
+        if (!Objects.isNull(orderMessage))
+            productService.processOrder(orderMessage.getOrderProducts());
     }
 }

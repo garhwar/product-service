@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ProductService {
@@ -68,7 +69,7 @@ public class ProductService {
         return productRepository.findAllByIdIn(productIds, pageRequest);
     }
 
-    public void processOrder(List<OrderMessage.OrderProduct> orderProducts) {
+    public void processOrder(Set<OrderMessage.OrderProduct> orderProducts) {
         try {
             List<Product> productsToSave = new ArrayList<>();
             for (OrderMessage.OrderProduct orderProduct : orderProducts) {
